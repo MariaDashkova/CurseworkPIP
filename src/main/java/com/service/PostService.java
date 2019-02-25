@@ -44,10 +44,12 @@ private final PostTagRepository postTagRepository;
 
 
     public void addTagForPost(int idPost, int idTag){
-        PostTagEntity pt = new PostTagEntity();
-        pt.setIdPost(idPost);
-        pt.setIdTag(idTag);
-        postTagRepository.save(pt);
+//        PostTagEntity pt = new PostTagEntity();
+//        pt.setIdPost(idPost);
+//        pt.setIdTag(idTag);
+//
+//        postTagRepository.save(pt);
+        postTagRepository.insert(idPost, idTag);
     }
 
 

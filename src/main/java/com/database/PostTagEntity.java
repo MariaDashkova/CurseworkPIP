@@ -13,7 +13,7 @@ public class PostTagEntity {
 
     @Basic
     @Id
-    @Column(name = "id_post", nullable = false)
+    @Column(name = "id_post", nullable = false, insertable = false, updatable = false)
     public int getIdPost() {
         return idPost;
     }
@@ -24,7 +24,7 @@ public class PostTagEntity {
 
     @Basic
     @Id
-    @Column(name = "id_tag", nullable = false)
+    @Column(name = "id_tag", nullable = false, insertable = false, updatable = false)
     public int getIdTag() {
         return idTag;
     }
@@ -54,7 +54,7 @@ public class PostTagEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_post", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "id_post", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     public PostEntity getPosts() {
         return posts;
     }
@@ -64,7 +64,7 @@ public class PostTagEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_tag", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "id_tag", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     public TagEntity getTags() {
         return tags;
     }

@@ -8,7 +8,7 @@ public class PostTagEntityPK implements Serializable {
     private int idPost;
     private int idTag;
 
-    @Column(name = "id_post", nullable = false)
+    @Column(name = "id_post", nullable = false, insertable = false, updatable = false)
     @Id
     public int getIdPost() {
         return idPost;
@@ -18,7 +18,7 @@ public class PostTagEntityPK implements Serializable {
         this.idPost = idPost;
     }
 
-    @Column(name = "id_tag", nullable = false)
+    @Column(name = "id_tag", nullable = false, insertable = false, updatable = false)
     @Id
     public int getIdTag() {
         return idTag;

@@ -70,49 +70,28 @@ public class ControllerPost {
     @RequestMapping(value = "/newPost", method = RequestMethod.POST)
     public ResponseEntity newPost(@RequestParam("username") String username,
                                   @RequestParam("body") String body,
-                                  @RequestParam("img") String img)
-  {
+                                  @RequestParam("img") String img) {
         java.util.Date d = new java.util.Date();
         Date date = new Date(d.getYear(), d.getMonth(), d.getDay());
         Collection<PostTagEntity> postTags = null;
         postService.addNewPost(img, date, body, customersService.findByLog(username).getId(), null);
         return ResponseEntity.ok(true);
     }
-    final char dm = (char) 34;
 
-    //Todo добавить теги к посту херово работает
-//    @RequestMapping(value = "/setTags", method = RequestMethod.POST)
-//    public ResponseEntity addTag(@RequestParam("id") int id,
-//                                 @RequestParam("bodyTags") String body,
-//                                 @RequestParam("img") String img) {
-    @GetMapping("/setTags")
-            public ResponseEntity setTag(){
-        StringBuilder builder = new StringBuilder();
-        builder.append("[{");
-        builder.append(dm);
-        builder.append("tag");
-        builder.append(dm);
-        builder.append(":");
-        builder.append(dm);
-        builder.append("кек");
-        builder.append(dm);
-        builder.append("}, {");
-        builder.append(dm);
-        builder.append("tag");
-        builder.append(dm);
-        builder.append(":");
-        builder.append(dm);
-        builder.append("лол");
-        builder.append(dm);
-        builder.append("}]");
-        JSONArray jsonArray = new JSONArray(builder.toString());
 
-        for(int i=0; i<jsonArray.length(); i++){
+    //Todo добавить теги
+    @RequestMapping(value = "/setTags", method = RequestMethod.POST)
+    public ResponseEntity addTag(@RequestParam("id") int id,
+                                 @RequestParam("bodyTags") String body,
+                                 @RequestParam("img") String img) {
+
+        JSONArray jsonArray = new JSONArray(body);
+
+        for (int i = 0; i < jsonArray.length(); i++) {
             try {
-                JSONObject json =(JSONObject) (jsonArray.get(i));
+                JSONObject json = (JSONObject) (jsonArray.get(i));
                 String someString = json.getString("tag");
-                System.out.println(tagService.findTag(someString).getId());
-                postService.addTagForPost(2, 1);
+                postService.addTagForPost(2, tagService.findTag(someString).getId());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -120,4 +99,5 @@ public class ControllerPost {
 
         return ResponseEntity.ok(true);
     }
+
 }
