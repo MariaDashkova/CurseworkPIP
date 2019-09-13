@@ -10,6 +10,18 @@ public class ReviewEntity {
     private Integer idAnalyst;
     private Integer idFilm;
     private String body;
+    private Integer score;
+
+    @Basic
+    @Column(name = "score", nullable = true, insertable = false, updatable = false)
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
     private Collection<RevTagEntity> revTags;
     private AnalystEntity analysts;
     private FilmEntity films;

@@ -7,12 +7,14 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+@EnableWebSecurity
 @SpringBootApplication
 public class CurseworkPipApplication {
 
     public static void main(String[] args) {
-   SpringApplication.run(CurseworkPipApplication.class, args);
+         SpringApplication.run(CurseworkPipApplication.class, args);
 
 //        ApiContextInitializer.init();
 //        TelegramBotsApi tApi = new TelegramBotsApi();

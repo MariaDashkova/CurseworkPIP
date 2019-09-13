@@ -29,8 +29,7 @@ public class ScoreService {
         this.scoreStudioRepository = scoreStudioRepository;
     }
 
-    public String findAllScoreForAnalyst() {
-        int id_analyst = 2;
+    public String findAllScoreForAnalyst(int id_analyst) {
         float sum = 0;
         try {
             List<ScoreAnalystEntity> scoreAnalystEntities = scoreAnalystRepository.findAllByIdAnalyst(id_analyst);
@@ -44,8 +43,7 @@ public class ScoreService {
         }
     }
 
-    public String findAllScoreForActor() {
-        int id_actor = 2;
+    public String findAllScoreForActor(int id_actor) {
         float sum = 0;
         try {
             List<ScoreActorEntity> scoreActorEntities = scoreActorRepository.findAllByIdActor(id_actor);
@@ -59,8 +57,7 @@ public class ScoreService {
         }
     }
 
-    public String findAllScoreForStudio() {
-        int id_studio = 2;
+    public String findAllScoreForStudio(int id_studio) {
         float sum = 0;
         try {
             List<ScoreStudioEntity> scoreStudioEntities = scoreStudioRepository.findAllByIdStudio(id_studio);
@@ -74,8 +71,7 @@ public class ScoreService {
         }
     }
 
-    public String findAllScoreForFilm() {
-        int id_film = 2;
+    public String findAllScoreForFilm(int id_film) {
         float sum = 0;
         try {
             List<ScoreFilmEntity> scoreFilmEntities = scoreFilmRepository.findAllByIdFilm(id_film);
@@ -89,18 +85,37 @@ public class ScoreService {
         }
     }
 
-    public String insertNewScoreForAnalyst() {
-        try {
-            ScoreAnalystEntity scoreAnalystEntity  = new ScoreAnalystEntity();
-            scoreAnalystEntity.setIdAnalyst(1);
-            scoreAnalystEntity.setIdUserUs(2);
-            scoreAnalystEntity.setScore(59);
-            scoreAnalystRepository.save(scoreAnalystEntity);
-            return "Save new score for analyst successfully";
-        } catch (NullPointerException ex) {
-            return null;
-        }
+    public void insertNewScoreForAnalyst(int id_analyst, int id_user, int score) {
+        ScoreAnalystEntity scoreAnalystEntity = new ScoreAnalystEntity();
+        scoreAnalystEntity.setIdAnalyst(id_analyst);
+        scoreAnalystEntity.setScore(score);
+        scoreAnalystEntity.setIdUserUs(id_user);
+        scoreAnalystRepository.save(scoreAnalystEntity);
+    }
 
+    public void insertNewScoreForStudio(int id_studio, int id_user, int score) {
+        ScoreStudioEntity scoreAnalystEntity = new ScoreStudioEntity();
+        scoreAnalystEntity.setIdStudio(id_studio);
+        scoreAnalystEntity.setScore(score);
+        scoreAnalystEntity.setIdUserUs(id_user);
+        scoreStudioRepository.save(scoreAnalystEntity);
+
+    }
+
+    public void insertNewScoreForActor(int id_actor, int id_user, int score) {
+        ScoreActorEntity scoreAnalystEntity = new ScoreActorEntity();
+        scoreAnalystEntity.setIdActor(id_actor);
+        scoreAnalystEntity.setScore(score);
+        scoreAnalystEntity.setIdUserUs(id_user);
+        scoreActorRepository.save(scoreAnalystEntity);
+    }
+
+    public void insertNewScoreForFilm(int id_film, int id_user, int score) {
+        ScoreFilmEntity scoreAnalystEntity = new ScoreFilmEntity();
+        scoreAnalystEntity.setIdFilm(id_film);
+        scoreAnalystEntity.setScore(score);
+        scoreAnalystEntity.setIdUserUs(id_user);
+        scoreFilmRepository.save(scoreAnalystEntity);
     }
 
 }

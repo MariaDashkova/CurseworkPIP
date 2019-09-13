@@ -16,7 +16,7 @@ public class SystemService {
 
     @Autowired
     public SystemService(SystemRepository systemRepository, TransactionRepository transactionRepository,
-                          StudioRpository studioRpository, AnalystRepository analystRepository) {
+                         StudioRpository studioRpository, AnalystRepository analystRepository) {
         this.systemRepository = systemRepository;
         this.transactionRepository = transactionRepository;
         this.studioRpository = studioRpository;
@@ -35,11 +35,8 @@ public class SystemService {
         }
     }
 
-    public String moneyTransfer() {
+    public String moneyTransfer(long money, int id_studio, int id_analyst) {
         try {
-            long money = 15;
-            int id_studio = 3;
-            int id_analyst = 4;
             TransactionEntity transactionEntity = new TransactionEntity();
             transactionEntity.setIdRecipient(id_analyst);
             transactionEntity.setIdSender(id_studio);

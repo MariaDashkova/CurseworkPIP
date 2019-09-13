@@ -34,7 +34,6 @@ public class ComplaintService {
     }
 
 
-    //TODO: как-то странно заполняется
     public String returnAllComplaintForDevelopers() {
         String allComplains = "";
         try {

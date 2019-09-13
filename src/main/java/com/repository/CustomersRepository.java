@@ -22,6 +22,11 @@ public interface CustomersRepository extends JpaRepository<CustomersEntity, Long
 
     @Modifying
     @Transactional
+    @Query("update CustomersEntity u set u.profileImageUrl = :imgUrl where u.id = :id")
+    void updateUserSetImgForId(@Param("imgUrl") String email, @Param("id") int id);
+
+    @Modifying
+    @Transactional
     @Query("update CustomersEntity u set u.emailHash = :emailHash where u.id = :id")
     void updateUserSetEmailForId(@Param("emailHash") String email, @Param("id") int id);
 
@@ -69,6 +74,7 @@ public interface CustomersRepository extends JpaRepository<CustomersEntity, Long
     @Query(value = "select r from CustomersEntity r where r.login = :log")
     CustomersEntity findByLogin(@Param("log") String log);
 
-
+    @Query(value = "select r from CustomersEntity r where r.password = :log")
+    CustomersEntity findByPassword(@Param("log") String log);
 
 }

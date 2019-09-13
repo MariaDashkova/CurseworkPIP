@@ -1,11 +1,15 @@
 package com.controllers;
 
 import com.database.ComplaintEntity;
+import com.database.CustomersEntity;
 import com.google.gson.Gson;
-import com.service.AdminService;
 import com.service.ComplaintService;
+import com.service.CustomersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,36 +19,25 @@ public class ControllerComplaint {
 
 
     private final ComplaintService complaintService;
+    private final CustomersService customersService;
 
     @Autowired
-    public ControllerComplaint(ComplaintService complaintService) {
+    public ControllerComplaint(ComplaintService complaintService, CustomersService customersService) {
         this.complaintService = complaintService;
+        this.customersService = customersService;
     }
 
-    @GetMapping("/answerw")
-    String getAns() {
-        String answer = complaintService.returnAnswers();
-        if (answer != null)
-            return answer;
-        else return "Empty request";
-    }
-
-    @GetMapping("/allComplains")
-    String getComplains() {
-        String answer = complaintService.returnAllComplaintForDevelopers();
-        if (answer != null)
-            return answer;
-        else return "Empty request";
-    }
-
-
+    @Secured({"CUSTOMER", "ACTOR", "ANALYST", "STUDIO"})
     @RequestMapping(value = "/newComplaint", method = RequestMethod.POST)
-    public ResponseEntity addTag(@RequestParam("id") int id,
-                                 @RequestParam("body") String body) {
-        complaintService.saveNewComplaint(body, id);
+    public ResponseEntity addTag(@RequestParam("body") String body) {
+        CustomersEntity customer = customersService.findByLog(
+                SecurityContextHolder.getContext().getAuthentication().getName());
+        if (customer == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        complaintService.saveNewComplaint(body, customer.getId());
         return ResponseEntity.ok(true);
     }
 
+    @Secured({"TECHNICAL_SUPPORT"})
     @RequestMapping(value = "/answerForComplaint", method = RequestMethod.POST)
     public ResponseEntity answerForComplaint(@RequestParam("idComplaint") int id,
                                              @RequestParam("body") String body) {
@@ -52,14 +45,14 @@ public class ControllerComplaint {
         return ResponseEntity.ok(true);
     }
 
-    @RequestMapping(value = "/getAllComplaints", method = RequestMethod.GET)
+    @Secured({"TECHNICAL_SUPPORT"})
+    @RequestMapping(value = "/getAllComplaints")
     public ResponseEntity getAllComplaints() {
         Gson g = new Gson();
         StringBuilder builder = new StringBuilder();
         List<ComplaintEntity> complaints = complaintService.currentComplaint();
         builder.append("[");
-        for (ComplaintEntity complaint : complaints
-        ) {
+        for (ComplaintEntity complaint : complaints) {
             builder.append(g.toJson(complaint));
             builder.append(",");
         }

@@ -5,14 +5,14 @@ import botBase.CustomersEntity;
 import botRep.CustomerRep;
 
 public class CustomerService {
-   private CustomerRep customer = new CustomerRep();
+    private CustomerRep customer = new CustomerRep();
 
-    public CustomersEntity checkCustomer(int id){
+    public CustomersEntity checkCustomer(int id) {
 
         return customer.findById(id);
     }
 
-    public CustomersEntity findCustomer(String log){
+    public CustomersEntity findCustomer(String log) {
         return customer.findByLogin(log);
     }
 

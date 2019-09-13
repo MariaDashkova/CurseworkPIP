@@ -10,7 +10,6 @@ public class StudioEntity {
     private int idStudio;
     private String aboutMe;
     private Long purse;
-    private byte[] logoImg;
     private Collection<DialogueEntity> dialogues;
     private Collection<FollowerStudioEntity> followerStudios;
     private Collection<GalleryStudioEntity> galleryStudios;
@@ -51,16 +50,6 @@ public class StudioEntity {
         this.purse = purse;
     }
 
-    @Basic
-    @Column(name = "logo_img", nullable = true)
-    public byte[] getLogoImg() {
-        return logoImg;
-    }
-
-    public void setLogoImg(byte[] logoImg) {
-        this.logoImg = logoImg;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,7 +60,6 @@ public class StudioEntity {
         if (idStudio != that.idStudio) return false;
         if (aboutMe != null ? !aboutMe.equals(that.aboutMe) : that.aboutMe != null) return false;
         if (purse != null ? !purse.equals(that.purse) : that.purse != null) return false;
-        if (!Arrays.equals(logoImg, that.logoImg)) return false;
 
         return true;
     }
@@ -81,7 +69,6 @@ public class StudioEntity {
         int result = idStudio;
         result = 31 * result + (aboutMe != null ? aboutMe.hashCode() : 0);
         result = 31 * result + (purse != null ? purse.hashCode() : 0);
-        result = 31 * result + Arrays.hashCode(logoImg);
         return result;
     }
 

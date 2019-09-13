@@ -41,14 +41,10 @@ public class StudioService {
         return info;
     }
 
-    public double analystScore(int id) {
-        Collection<ScoreStudioEntity> stScore = studioRpository.findByIdStudio(1).getScoreStudios();
-        Float sum = 1f;
-
-        for (ScoreStudioEntity e : stScore) sum += e.getScore();
-
-        return Math.round((sum / stScore.size()) * 100.0) / 100.0;
+    public void setInfo(int id_studio, String info){
+        studioRpository.updateInfo(info, id_studio);
     }
+
 
     public Collection<GalleryStudioEntity> getStudioGallery(int id) {
         //получаем все фото от студии по ее id в коллекцию
@@ -60,6 +56,10 @@ public class StudioService {
         List<PostEntity> studioPosts = postRepository.findAllUsers(id);
         //получилимножество постов, где каждый пост целиком
         return studioPosts.size();
+    }
+
+    public Long getStudioPurse(int id){
+        return studioRpository.findByIdStudio(id).getPurse();
     }
 
     //верефикация актеров для конкретной студии
@@ -75,6 +75,14 @@ public class StudioService {
         LinkedList<VerificationEntity> actors = vereficationRepository.selectActorsToVer(id);
         return actors;
 
+    }
+
+    public void setPurse(int id_studio, long purse){
+        studioRpository.updatePurse(purse, id_studio);
+    }
+
+    public String getInfo(int id_studio){
+        return studioRpository.findByIdStudio(id_studio).getAboutMe();
     }
 
     }

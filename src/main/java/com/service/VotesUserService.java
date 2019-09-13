@@ -15,11 +15,11 @@ public class VotesUserService {
         this.votesUserRepository = votesUserRepository;
     }
 
-    public String addNewVote() {
+    public String addNewVote(int id_user, int id_vote) {
         try {
             VotesUserEntity votesUserEntity = new VotesUserEntity();
-            votesUserEntity.setIdUser(1);
-            votesUserEntity.setIdVotes(1);
+            votesUserEntity.setIdUser(id_user);
+            votesUserEntity.setIdVotes(id_vote);
             votesUserRepository.save(votesUserEntity);
             return "Save person after voting";
         } catch (NullPointerException ex) {
@@ -27,8 +27,8 @@ public class VotesUserService {
         }
     }
 
-    public boolean checkUserVote() {
-        VotesUserEntity votesUserEntity = votesUserRepository.findByIdUserAndAndIdVotes(1, 1);
+    public boolean checkUserVote(int id_user, int id_vote) {
+        VotesUserEntity votesUserEntity = votesUserRepository.findByIdUserAndAndIdVotes(id_user, id_vote);
         return votesUserEntity != null;
     }
 

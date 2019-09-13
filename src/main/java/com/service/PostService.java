@@ -2,9 +2,10 @@ package com.service;
 
 import com.database.PostEntity;
 import com.database.PostTagEntity;
-import com.database.PostTagEntityPK;
+import com.database.TagEntity;
 import com.repository.PostRepository;
 import com.repository.PostTagRepository;
+import com.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +16,30 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-private final PostTagRepository postTagRepository;
+    private final PostTagRepository postTagRepository;
+    private final TagRepository tagRepository;
+
     @Autowired
-    public PostService(PostRepository postRepository, PostTagRepository postTagRepository) {
+    public PostService(PostRepository postRepository, PostTagRepository postTagRepository, TagRepository tagRepository) {
         this.postRepository = postRepository;
 
         this.postTagRepository = postTagRepository;
+        this.tagRepository = tagRepository;
     }
 
     public String getAllPosts() {
         try {
             List<PostEntity> postEntities = postRepository.findAll();
-            return "All was saved in list.";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("[");
+            for (PostEntity post : postEntities) {
+                stringBuilder.append("{\"name\":").append(post.getCustomers().getName())
+                        .append(",\"tag\"").append(post.getPostTags())
+                        .append(",\"body\"").append(post.getBody()).append("},");
+            }
+            stringBuilder.setLength(stringBuilder.length() - 1);
+            stringBuilder.append("]");
+            return String.valueOf(stringBuilder);
         } catch (NullPointerException ex) {
             return null;
         }
@@ -43,13 +56,10 @@ private final PostTagRepository postTagRepository;
     }
 
 
-    public void addTagForPost(int idPost, int idTag){
-//        PostTagEntity pt = new PostTagEntity();
-//        pt.setIdPost(idPost);
-//        pt.setIdTag(idTag);
-//
-//        postTagRepository.save(pt);
+    public void addTagForPost(int idPost, int idTag) {
         postTagRepository.insert(idPost, idTag);
+        TagEntity tagEntity = tagRepository.findById(idTag);
+        tagEntity.setCount(tagEntity.getCount() + 1);
     }
 
 

@@ -43,23 +43,45 @@ public class ChatService {
         }
     }
 
-    public List<String> returnMessageContent() {
+    public String returnSetMes(int film_id, int user_id, String message) {
         try {
-            Integer film_id = 1;
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-            List<String> mes = new LinkedList<>();
-
-            List<ChatEntity> entities = chatRepository.findByFilmId(film_id);
-            for (ChatEntity entity : entities) {
-                mes.add(dateFormat.format(entity.getCreateDate()));
-                mes.add(entity.getMsg());
-                if (mes.size() > 20) return mes;
-            }
-            return mes;
+            ChatEntity chatEntity = new ChatEntity();
+            java.util.Date date = new java.util.Date();
+            chatEntity.setCreateDate(new java.sql.Date(date.getTime()));
+            chatEntity.setMsg(message);
+            chatEntity.setFilmId(film_id);
+            chatEntity.setUserUsId(user_id);
+            chatRepository.save(chatEntity);
+            return "ok";
         } catch (NullPointerException ex) {
             return null;
         }
     }
+
+    public String returnMessageContent(int film_id) {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            StringBuilder answer = new StringBuilder();
+            answer.append("[");
+
+            List<ChatEntity> chat = chatRepository.findByFilmId(film_id);
+            for (ChatEntity message : chat) {
+                answer.append("{\"message\":\"")
+                        .append(message.getMsg())
+                        .append("\",\"date\":\"")
+                        .append(dateFormat.format(message.getCreateDate()))
+                        .append("\",\"user\":\"")
+                        .append(message.getCustomers().getName())
+                        .append("\"},");
+            }
+            answer.setLength(answer.length() - 1);
+            answer.append("]");
+            return String.valueOf(answer);
+        } catch (NullPointerException ex) {
+            return null;
+        }
+    }
+
 
 
      public boolean checkUserInChat() {
@@ -97,10 +119,9 @@ public class ChatService {
         }
     }
 
-    public String findChatForFilm() {
+    public String findChatForFilm(int film_id) {
         try {
             List<ChatEntity> chatEntities = chatRepository.findAll();
-            int film_id = 1;
             ChatEntity chatInfo;
             for (int i = 0; i < chatEntities.size(); i++) {
                 if (chatEntities.get(i).getFilmId() == film_id) {

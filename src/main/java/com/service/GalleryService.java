@@ -52,4 +52,18 @@ public class GalleryService {
             return null;
         }
     }
+
+    //TODO: метод который работает с фото как со строкой
+    public String getPhotoAsString(int id_film) {
+        List<GalleryFilmEntity> galleryFilm = galleryFilmRepository.findAllByIdFilm(id_film);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[\"");
+        stringBuilder.append(galleryFilm.get(0).getFilms().getPhoto()).append("\",\"");
+        for (GalleryFilmEntity photo : galleryFilm) {
+            stringBuilder.append(photo.getPhoto()).append("\",\"");
+        }
+        stringBuilder.setLength(stringBuilder.length() - 2);
+        stringBuilder.append("]");
+        return String.valueOf(stringBuilder);
+    }
 }

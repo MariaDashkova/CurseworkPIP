@@ -1,82 +1,39 @@
 package com.service;
 
 import com.database.*;
-import com.repository.FilmRepository;
-import com.repository.GenreFilmRepository;
-import com.repository.PostRepository;
-import com.repository.ReviewRepository;
+import com.repository.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+
+import com.google.gson.Gson;
 
 @Service
 public class FilmService {
 
-private final PostRepository postRepository;
     private final FilmRepository filmRepository;
-    private final GenreFilmRepository genreFilmRepository;
+    private final PostRepository postRepository;
     private final ReviewRepository reviewRepository;
+    private final ScoreAnalystRepository scoreAnalystRepository;
+
 
     @Autowired
-    public FilmService(PostRepository postRepository, FilmRepository filmRepository, GenreFilmRepository genreFilmRepository, ReviewRepository reviewRepository) {
-        this.postRepository = postRepository;
+    public FilmService(FilmRepository filmRepository,
+                       PostRepository postRepository,
+                       ReviewRepository reviewRepository, ScoreAnalystRepository scoreAnalystRepository) {
         this.filmRepository = filmRepository;
-        this.genreFilmRepository = genreFilmRepository;
+        this.postRepository = postRepository;
         this.reviewRepository = reviewRepository;
+        this.scoreAnalystRepository = scoreAnalystRepository;
+
     }
 
-    //SELECT film.name, film.id FROM film JOIN genre_film JOIN
-    // genre g2 on genre_film.id_genre = g2.idg on film.id = g.id_film   WHERE g2.name = 'VAL'; !!!!
-    public ArrayList<String> filmsSortByGenre(int id) {
-
-        ArrayList<String> names = new ArrayList<String>();
-        LinkedList<Integer> filmsId = new LinkedList<Integer>();
-
-        LinkedList<GenreFilmEntity> genres = genreFilmRepository.filmsByGenre(3);
-
-        for (GenreFilmEntity element : genres) {
-            filmsId.add(element.getIdFilm());
-        }
-
-        for (Integer element : filmsId) {
-            names.add(filmRepository.findById(element).getName());
-        }
-        return names;
-    }
-
-    //films for news feed
-    //SELECT filM.name FROM film WHERE create_date <= current_date and  create_date >= current_date - 30;
-    public String filmDate() {
-        //Date date = new Date((new java.util.Date()).getTime());
-        LinkedList<FilmEntity> listOfFilms = filmRepository.dateSelect();
-        return listOfFilms.get(0).getName();
-    }
-
-    public String[] filmInfo(int id){
-        String[] info = new String[5];
-        filmRepository.findById(id);
-
-        info[0]=( filmRepository.findById(id).getName());
-        info[1]= String.valueOf(( filmRepository.findById(id).getCreateDate()));
-        info[2]=( filmRepository.findById(id).getBody());
-        info[3]= String.valueOf(( filmRepository.findById(id).getImg()));
-        info[4]= String.valueOf(( filmRepository.findById(id).getCashbox()));
-
-        return info;
-    }
-
-    public double filmScore(int id){
-        Collection<ScoreFilmEntity> fScore = filmRepository.findById(1).getScoreFilms();
-        Float sum = 1f;
-
-        for(ScoreFilmEntity e: fScore) sum += e.getScore();
-
-        return Math.round( sum/fScore.size()* 100.0) / 100.0 ;
-    }
-
-    public String getInfoForUserNewsFeed() {
-        int id_user = 1;
+    public String getInfoForUserNewsFeed(int id_user) {
         int count = 0;
         StringBuilder info = new StringBuilder();
         try {
@@ -112,7 +69,8 @@ private final PostRepository postRepository;
                 if (flag) forFollowerPostList.add(postEntity);
             }
 
-            for (PostEntity postEntity : postEntities) {
+
+            for (PostEntity postEntity : forFollowerPostList) {
                 info.append("Author:")
                         .append(postEntity.getCustomers().getName())
                         .append("Post:")
@@ -121,128 +79,40 @@ private final PostRepository postRepository;
                 if (count > 50) return String.valueOf(info);
             }
 
-//            List<TagEntity> tagEntities = tagRepository.findAll();
-//            TreeMap<Integer, TagEntity> mapTag = new TreeMap<>();
-//            for (TagEntity tagEntity : tagEntities) {
-//                int tip = random.nextInt(5);
-//                java.util.Collection c = mapTag.keySet();
-//                Iterator itr = c.iterator();
-//                while (itr.hasNext()) {
-//                    if ((float) itr.next() == tagEntity.getCount()) mapTag.put(tagEntity.getCount() + tip, tagEntity);
-//                    else mapTag.put(tagEntity.getCount() + tip, tagEntity);
-//                }
-//            }
-//            StringBuilder info = new StringBuilder();
-
-//            for (int i = 0; i < mapTag.size(); i++) {
-//                List<PostTagEntity> postTagEntities = postTagRepository.findAllByIdTag(mapTag.get(i).getId());
-//                for (int j = 0; j < postTagEntities.size(); j++) {
-//                    count++;
-//                    int id = postTagEntities.get(i).getIdTag();
-//                    TagEntity tagEntity = (tagRepository.findById(id));
-//
-//                    boolean flag = false;
-//
-//                    List<FollowerStudioEntity> followerStudioEntities = followerStudioRepository.findByIdCustomers((int) id_user);
-//                    List<FollowerActorEntity> followerActorEntities = followerActorRepository.findByIdCustomers((int) id_user);
-//                    List<FollowerAnalystEntity> followerAnalystEntities = followerAnalystRepository.findByIdCustomers((int) id_user);
-//
-//                    for (FollowerStudioEntity followerStudioEntity : followerStudioEntities) {
-//                        if (followerStudioEntity.getIdCustomers() == id_user)
-////                                && followerStudioEntity.getIdStudio() == tagEntity.getAuthor())
-//                            flag = true;
-//                    }
-//
-//                    for (FollowerActorEntity followerActorEntity : followerActorEntities) {
-//                        if (followerActorEntity.getIdCustomers() == id_user)
-////                                && followerActorEntity.getIdActor() == tagEntity.getAuthor())
-//                            flag = true;
-//                    }
-//
-//                    for (FollowerAnalystEntity followerAnalystEntity : followerAnalystEntities) {
-//                        if (followerAnalystEntity.getIdCustomers() == id_user)
-////                                && followerAnalystEntity.getIdAnalyst() == tagEntity.getAuthor())
-//                            flag = true;
-//                    }
-//
-//                    if (flag) {
-//
-//                        id_post = postTagEntities.get(i).getIdPost();
-//                        info.append("Name: ")
-//                                .append(filmRepository.findById(id_post).getName())
-//                                .append("  Body: ").append(filmRepository.findById(id_post).getBody())
-//                                .append("  CashBox:  ").append(filmRepository.findById(id_post).getCashbox());
-//                        if (count > 50) return String.valueOf(info);
-//                    }
-//                }
-//            }
-
-//            return
             return "UserFeed";
         } catch (NullPointerException ex) {
             return null;
         }
     }
 
-    public String findTheMostInterestingAnnotation() {
-        int id_film = 1;
-        StringBuilder answer = new StringBuilder();
-        try{
+    //TODO: Добавить к Маше 10.02.2018
+    public String findTheMostInterestingAnnotation(int id_film) {
+        try {
             List<ReviewEntity> reviewEntities = reviewRepository.findAllByIdFilm(id_film);
-            TreeMap<ReviewEntity, Float> entityTreeMap = new TreeMap<>();
+            TreeMap<Float, ReviewEntity> entityTreeMap = new TreeMap<>();
 
             for (ReviewEntity reviewEntity : reviewEntities) {
                 float sum = 0;
                 for (ScoreAnalystEntity score : reviewEntity.getAnalysts().getScoreAnalysts()) {
-                    sum = +score.getScore();
+                    sum = sum + score.getScore();
                 }
-                entityTreeMap.put(reviewEntity, sum);
+                entityTreeMap.put(sum / reviewEntity.getAnalysts().getScoreAnalysts().size(),
+                        reviewEntity);
             }
-
-            for (ReviewEntity review: reviewEntities) {
-                answer.append(" Analyst: ")
-                        .append(review.getAnalysts().getCustomersAnalyst().getName())
-                        .append(" Body: ")
-                        .append(review.getBody());
+            StringBuilder str = new StringBuilder("[");
+            for (Float key : entityTreeMap.descendingKeySet()) {
+                str.append("{\"body\":")
+                        .append("\"").append(entityTreeMap.get(key).getBody()).append("\"")
+                        .append(", \"score\":")
+                        .append("\"").append(entityTreeMap.get(key).getScore()).append("\"")
+                        //.getAnalystByIdAnalyst().getCustomersByIdAnalyst().getUserUsUsById()).append("\"")
+                        .append(", \"name\":")
+                        .append("\"").append(entityTreeMap.get(key).getAnalysts().getCustomersAnalyst().getName()).append("\"")
+                        .append("}, ");
             }
-//        Random random = new Random();
-//        StringBuilder answer = new StringBuilder();
-//        try {
-//            List<ScoreAnalystEntity> scoreAnalystEntities = scoreAnalystRepository.findAll();
-//            TreeMap<Float, ScoreAnalystEntity> scoreMap = new TreeMap<>();
-//            List<Float> key = new ArrayList<>();
-//            boolean flag = false;
-//            for (ScoreAnalystEntity scoreEntity : scoreAnalystEntities) {
-//                List<ReviewEntity> reviewEntitiesOfThisFilm = reviewRepository.findAllByIdAnalyst(scoreEntity.getIdAnalyst());
-//                for (ReviewEntity aReviewEntitiesOfThisFilm : reviewEntitiesOfThisFilm) {
-////                    if ((aReviewEntitiesOfThisFilm.getFilmByIdFilm().getId() == id_film)
-////                            && (scoreEntity.getAnalystByIdAnalyst().getIdAnalyst() == aReviewEntitiesOfThisFilm.getIdAnalyst()))
-////                        flag = true;
-//                }
-//                boolean flagForCheckingKey = true;
-//                if (flag) {
-//                    java.util.Collection c = scoreMap.keySet();
-//                    float tip = (float) (0.1 * random.nextFloat());
-//                    for (Object aC : c) {
-//                        if ((Float) aC == scoreEntity.getScore()) flagForCheckingKey = false;
-//                    }
-//                    if (flagForCheckingKey) scoreMap.put(scoreEntity.getScore() + tip, scoreEntity);
-//                    key.add(scoreEntity.getScore());
-//                }
-//            }
-//            int count = 0;
-//            java.util.Collection c = scoreMap.keySet();
-//            Iterator itr = c.iterator();
-//            while (itr.hasNext() && count < 3) {
-//                count++;
-//                Float keyOfObject = (Float) itr.next();
-//                answer.append(" Analyst: ")
-//                        .append(reviewRepository.findByIdAnalystAndAndFilmByIdFilm(scoreMap.get(keyOfObject).getIdAnalyst(), id_film).getIdAnalyst())
-//                        .append(" Body: ")
-//                        .append(reviewRepository.findByIdAnalystAndAndFilmByIdFilm(scoreMap.get(keyOfObject).getIdAnalyst(), id_film).getBody());
-//            }
-//            return String.valueOf(answer);
-            return "the most interesting reviews";
+            str.setLength(str.length() - 3);
+            str.append("}]");
+            return String.valueOf(str);
         } catch (NullPointerException ex) {
             return null;
         }
@@ -267,14 +137,88 @@ private final PostRepository postRepository;
         }
     }
 
+//    public String findMainInfoForTheFilm(int film_id, int user_id) throws IOException {
+//        try {
+//            float sum = 0;
+//            float scoreUser = 0;
+//            FilmEntity filmEntity = filmRepository.findById(film_id);
+//            List<ScoreFilmEntity> score = (List<ScoreFilmEntity>) filmEntity.getScoreFilmsById();
+//
+//            for (ScoreFilmEntity scoreFilmEntity : score) {
+//                sum = sum + scoreFilmEntity.getScore();
+//            }
+//
+//            Gson gson = new Gson();
+//            FilmEntity film = new FilmEntity();
+//            film.setId(filmEntity.getId());
+//            film.setName(filmEntity.getName());
+//            film.setCreateDate(filmEntity.getCreateDate());
+//            film.setBody(filmEntity.getBody());
+//            film.setCashbox(filmEntity.getCashbox());
+//
+//            for (int i = 0; i < filmEntity.getScoreFilmsById().size(); i++) {
+//                if (((List<ScoreFilmEntity>) filmEntity.getScoreFilmsById()).get(i).getIdUserUs() == user_id)
+//                    scoreUser = ((List<ScoreFilmEntity>) filmEntity.getScoreFilmsById()).get(i).getScore();
+//            }
+//
+//            String str = gson.toJson(film);
+//            String s = new sun.misc.BASE64Encoder().encode(filmEntity.getImg());
+//
+//            String str2 = str.substring(0, str.length() - 1).concat(",\"score\":"
+//                    + sum / score.size() + ",\"userScore\":" + scoreUser + "}");
+//            // ",\"photo\":\"" + filmEntity.getMeta() + s +
+//
+//            return str2;
+//        } catch (Error ex) {
+//            return null;
+//        }
+//    }
 
-    public String findMainInfoForTheFilm() {
+
+    public String findMainInfoForTheFilm(int film_id, int user_id) throws IOException {
         try {
-            int film_id = 1;
+            float sum = 0;
+            float scoreUser = 0;
             FilmEntity filmEntity = filmRepository.findById(film_id);
-            return "Name:  " + filmEntity.getName() + "   Body:  " + filmEntity.getBody();
-        } catch (NullPointerException ex) {
+            List<ScoreFilmEntity> score = (List<ScoreFilmEntity>) filmEntity.getScoreFilms();
+
+            for (ScoreFilmEntity scoreFilmEntity : score) {
+                sum = sum + scoreFilmEntity.getScore();
+            }
+
+            Gson gson = new Gson();
+            FilmEntity film = new FilmEntity();
+            film.setId(filmEntity.getId());
+            film.setName(filmEntity.getName());
+            film.setCreateDate(filmEntity.getCreateDate());
+            film.setBody(filmEntity.getBody());
+            film.setCashbox(filmEntity.getCashbox());
+
+            for (int i = 0; i < filmEntity.getScoreFilms().size(); i++) {
+                if (((List<ScoreFilmEntity>) filmEntity.getScoreFilms()).get(i).getIdUserUs() == user_id)
+                    scoreUser = ((List<ScoreFilmEntity>) filmEntity.getScoreFilms()).get(i).getScore();
+            }
+
+            String str = gson.toJson(film);
+
+            return str.substring(0, str.length() - 1).concat(",\"score\":"
+                    + sum / score.size() + ",\"userScore\":" + scoreUser + "}");
+        } catch (Error ex) {
             return null;
         }
+    }
+
+    public void saveNewFilm(String name, Date create_date, String body,
+                            String photo, int cashbox, int id_studio) {
+        FilmEntity film = new FilmEntity();
+        film.setCashbox(cashbox);
+        film.setBody(body);
+        film.setName(name);
+        film.setPhoto(photo);
+        film.setCreateDate((java.sql.Date) create_date);
+        filmRepository.save(film);
+        ScriptEntity script = new ScriptEntity();
+        script.setIdFilm(film.getId());
+        script.setIdStudio(id_studio);
     }
 }

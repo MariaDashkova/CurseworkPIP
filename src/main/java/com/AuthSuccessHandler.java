@@ -1,5 +1,5 @@
-package com.security;
-
+//package com;
+//
 //import org.springframework.security.core.Authentication;
 //import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 //import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -13,7 +13,7 @@ package com.security;
 //import javax.servlet.http.HttpServletResponse;
 //import java.io.IOException;
 //
-////@Component
+//@Component
 //public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 //
 //    private RequestCache requestCache = new HttpSessionRequestCache();

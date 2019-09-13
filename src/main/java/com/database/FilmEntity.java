@@ -12,7 +12,10 @@ public class FilmEntity {
     private String name;
     private Date createDate;
     private String body;
-    private byte[] img;
+
+
+
+    private String photo;
     private Integer cashbox;
     private Collection<CastActorEntity> castActors;
     private Collection<ChatEntity> chats;
@@ -65,15 +68,14 @@ public class FilmEntity {
     }
 
     @Basic
-    @Column(name = "img", nullable = true)
-    public byte[] getImg() {
-        return img;
+    @Column(name = "photo", nullable = true)
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setImg(byte[] img) {
-        this.img = img;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
-
     @Basic
     @Column(name = "cashbox", nullable = true)
     public Integer getCashbox() {
@@ -95,7 +97,6 @@ public class FilmEntity {
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (createDate != null ? !createDate.equals(that.createDate) : that.createDate != null) return false;
         if (body != null ? !body.equals(that.body) : that.body != null) return false;
-        if (!Arrays.equals(img, that.img)) return false;
         if (cashbox != null ? !cashbox.equals(that.cashbox) : that.cashbox != null) return false;
 
         return true;
@@ -107,7 +108,6 @@ public class FilmEntity {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
         result = 31 * result + (body != null ? body.hashCode() : 0);
-        result = 31 * result + Arrays.hashCode(img);
         result = 31 * result + (cashbox != null ? cashbox.hashCode() : 0);
         return result;
     }

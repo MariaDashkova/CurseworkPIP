@@ -5,18 +5,66 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
-POST http://localhost:8080/newPost
-Content-Type: application/x-www-form-urlencoded
-
-username=a&body=new_Post&&img
+GET http://localhost:8080/registrationVK?id=99
+Accept: application/json
 
 ###
 
-POST http://localhost:8080/newPost
+POST http://localhost:8080/registrationVK?first_name=m&last_name=m&herf=user&mid=123
+
+
+
+###
+
+POST http://localhost:8080/api/item
 Content-Type: application/x-www-form-urlencoded
 
 id=99&content=new-element
 
+###
 
+POST http://localhost:8080/newCust
+Content-Type: application/x-www-form-urlencoded
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/x-www-form-urlencoded
+
+username=ok&password=ok
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/x-www-form-urlencoded
+
+username=dgergaergae&password=ok
+
+###
+
+POST http://localhost:8080/registration
+Content-Type: application/x-www-form-urlencoded
+
+firstName=firstName&lastName=last_name&mobile=mobile&email=email&username=username&password=pass
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/x-www-form-urlencoded
+
+username=username&password=pass
+
+###
+
+POST http://localhost:8080/changeSet
+Content-Type: application/x-www-form-urlencoded
+
+id=99&content=new-element
+firstName=Name&lastName=name&mobile=000&email=mail
+
+###
+
+GET http://localhost:8080/get
+Accept: application/json
 
 ###

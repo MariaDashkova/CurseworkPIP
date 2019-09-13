@@ -18,14 +18,13 @@ public class VotesService {
         this.votesRepository = votesRepository;
     }
 
-    public String addNewVote() {
-        byte[] img = new byte[]{1, 2, 3};
+    public String addNewVote(int id_film, String name) {
         try {
             VotesEntity votesEntity = new VotesEntity();
-            votesEntity.setIdFilm(1);
+            votesEntity.setIdFilm(id_film);
             votesEntity.setCountNegative(0);
             votesEntity.setCountPositive(0);
-            votesEntity.setName("djn");
+            votesEntity.setName(name);
             votesEntity.setFlagAccess(true);
             votesRepository.save(votesEntity);
             return "Create new Vote";
@@ -60,7 +59,7 @@ public class VotesService {
     private void positive(VotesEntity votesEntity) {
         try {
             setFlag(true);
-            votesRepository.updatePositive(votesEntity.getCountPositive() + 1, 1);
+            votesRepository.updatePositive(votesEntity.getCountPositive() + 1, votesEntity.getId());
         } catch (NullPointerException ex) {
             setFlag(false);
         }
@@ -69,16 +68,15 @@ public class VotesService {
     private void negative(VotesEntity votesEntity) {
         try {
             setFlag(true);
-            votesRepository.updateNegative(votesEntity.getCountNegative() + 1, 1);
+            votesRepository.updateNegative(votesEntity.getCountNegative() + 1, votesEntity.getId());
         } catch (NullPointerException ex) {
             setFlag(false);
         }
     }
 
-    public String recalculation() {
-        boolean choice = true;
+    public String recalculation(int id_vote, boolean choice) {
         try {
-            VotesEntity votesEntity = votesRepository.findById(1);
+            VotesEntity votesEntity = votesRepository.findById(id_vote);
             if (choice) positive(votesEntity);
             else negative(votesEntity);
             return "пересчитано";
@@ -87,15 +85,15 @@ public class VotesService {
         }
     }
 
-    public String findAllVotesForFilm() {
+    public String findAllVotesForFilm(int id_film) {
         try {
-            List<VotesEntity> entities = votesRepository.findAllByIdFilm(1);
+            List<VotesEntity> entities = votesRepository.findAllByIdFilm(id_film);
             StringBuilder answer = new StringBuilder();
             for (VotesEntity entity : entities) {
                 answer.append("Name: ").append(entity.getName())
-                        .append("Negative: ").append(entity.getCountNegative())
-                        .append("Positive: ").append(entity.getCountPositive())
-                        .append("IMG: ").append(Arrays.toString(entity.getVotesImageUrl()));
+                        .append(",Negative: ").append(entity.getCountNegative())
+                        .append(",Positive: ").append(entity.getCountPositive())
+                        .append(",IMG: ").append(Arrays.toString(entity.getVotesImageUrl()));
             }
             return String.valueOf(answer);
         } catch (NullPointerException ex) {
@@ -103,9 +101,8 @@ public class VotesService {
         }
     }
 
-    public String findInfoForVote() {
+    public String findInfoForVote(int id_vote) {
         try {
-            int id_vote = 1;
             VotesEntity votesEntity = votesRepository.findById(id_vote);
             return "  Name:  " + votesEntity.getName() + "  Pos: "
                     + votesEntity.getCountPositive() + "  Neg:  " + votesEntity.getCountNegative();

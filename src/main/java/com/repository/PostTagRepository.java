@@ -14,4 +14,6 @@ public interface PostTagRepository extends JpaRepository<PostTagEntity, Long> {
     @Query(value = "insert into post_tag (id_post, id_tag) VALUES (:insertLink,:id)", nativeQuery = true)
     @Transactional
     void insert(@Param("insertLink") int insertLink, @Param("id") int id);
+
+    PostTagEntity findByIdTag(long id_tag);
 }

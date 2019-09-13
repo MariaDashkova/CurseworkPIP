@@ -33,19 +33,7 @@ public class Bot extends TelegramLongPollingBot {
     String msg2;
 
 
-//
-//    //точка входа в проект
-//    public static void main(String[] args) {
-//        ApiContextInitializer.init();
-//        TelegramBotsApi tApi = new TelegramBotsApi();
-//        //ргеистрация бота
-//        try {
-//            tApi.registerBot(new Bot());
-//        } catch (TelegramApiRequestException g) {
-//            g.printStackTrace();
-//        }
-//
-//    }
+
 
     //для према сообщений пользователя через лонгпул
     public void onUpdateReceived(Update update) {

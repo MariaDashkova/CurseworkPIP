@@ -14,6 +14,11 @@ public interface StudioRpository extends JpaRepository<StudioEntity,Long> {
     @Transactional
     @Query("update StudioEntity u set u.purse = :purse where u.id = :id")
     void updatePurse(@Param("purse") long purse, @Param("id") int id);
+
+    @Modifying
+    @javax.transaction.Transactional
+    @Query("update StudioEntity u set u.aboutMe = :aboutMe where u.id = :id")
+    void updateInfo(@Param("aboutMe") String aboutMe, @Param("id") int id);
 }
 
 

@@ -11,4 +11,6 @@ public interface VereficationRepository extends JpaRepository<VerificationEntity
 
     @Query(value = "select v from VerificationEntity v where v.idStudio = :id")
     LinkedList<VerificationEntity> selectActorsToVer(@Param("id") Integer id);
+
+
 }

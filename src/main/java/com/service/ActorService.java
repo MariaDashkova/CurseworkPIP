@@ -52,5 +52,18 @@ public class ActorService {
         List<PostEntity> studioPosts = postRepository.findAllUsers(id);
         //получилимножество постов, где каждый пост целиком
         return studioPosts.size();
+
+    }//Todo add
+    public Collection<PostEntity> allPosts(int id) {
+        try {
+            return postRepository.findByIdUsers(id);
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
+    //ToDO add
+    public Collection<FollowerActorEntity> getFollowers(int id) {
+        return actorRepository.findByIdActor(id).getFollowerActors();
+    }
+
 }

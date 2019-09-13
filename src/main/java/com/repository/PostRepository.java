@@ -8,12 +8,16 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.sql.Date;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<PostEntity,Long> {
     @Query(value = "select p from PostEntity p where p.userUsOwnerId = :id")
     List<PostEntity> findAllUsers(@Param("id") int id);
+
+    @Query(value = "select p from PostEntity p where p.userUsOwnerId = :id")
+    Collection<PostEntity> findByIdUsers(@Param("id") int id);
 
     @Modifying
     @Transactional
